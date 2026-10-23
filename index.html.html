@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>¡Demuestra lo que sabes! | Aventura Literaria</title>
+<style>
+:root{--ink:#26234a;--pink:#ff4fa3;--purple:#7757ff;--yellow:#ffd84d;--cyan:#42d9e8;--green:#39d98a;--red:#ff6577}
+*{box-sizing:border-box}
+body{margin:0;font-family:"Trebuchet MS",Arial,sans-serif;color:var(--ink);background:linear-gradient(135deg,#ffe2f1,#dcd7ff 48%,#c9f8ff);min-height:100vh}
+button,input{font:inherit}
+button{cursor:pointer;border:0;border-radius:15px;padding:12px 18px;font-weight:900;transition:transform .15s,filter .15s}
+button:hover{transform:translateY(-2px);filter:brightness(1.04)}
+button:focus-visible,input:focus-visible{outline:3px solid #29224e;outline-offset:3px}
+.app{max-width:1050px;margin:auto;padding:22px}
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.logo{font-weight:1000;font-size:1.1rem;background:#fff;padding:10px 15px;border-radius:20px;box-shadow:0 5px 0 #d4c7f5}
+.pill{background:#fff9;border:2px solid #fff;padding:9px 13px;border-radius:20px;font-weight:900}
+.hero,.panel{background:#ffffffeb;border:3px solid #fff;border-radius:30px;padding:clamp(20px,4vw,40px);box-shadow:0 14px 0 #b8a9ed55;margin-top:22px}
+.hero{text-align:center;position:relative;overflow:hidden}
+.kicker{display:inline-block;background:var(--yellow);padding:8px 14px;border-radius:30px;font-weight:1000;transform:rotate(-2deg)}
+h1{font-size:clamp(2.1rem,6vw,4.6rem);line-height:1;margin:18px 0 12px;letter-spacing:-2px}
+.gradient{background:linear-gradient(90deg,#ff4fa3,#7757ff,#08a8bd);-webkit-background-clip:text;background-clip:text;color:transparent}
+.subtitle{font-size:1.1rem;line-height:1.6;max-width:650px;margin:0 auto 20px}
+.cast{display:flex;justify-content:center;align-items:end;gap:12px;flex-wrap:wrap;margin:24px 0}
+.character{width:105px;height:116px;border-radius:24px;background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 7px 0 #e3dafa;border:2px solid #f4efff}
+.avatar{font-size:3rem;filter:drop-shadow(0 4px 1px #0001)}
+.character b{font-size:.83rem;margin-top:3px}
+.primary{background:linear-gradient(90deg,var(--pink),var(--purple));color:white;box-shadow:0 6px 0 #5335bb;font-size:1.05rem;padding:15px 24px}
+.secondary{background:#eee9ff;color:#47348e}
+.progress-wrap{height:13px;background:#e8e2ff;border-radius:30px;overflow:hidden;margin:12px 0 20px}
+.progress{height:100%;width:0;background:linear-gradient(90deg,var(--pink),var(--yellow),var(--cyan));transition:width .3s}
+.hud{display:flex;gap:10px;justify-content:space-between;flex-wrap:wrap}
+.stat{background:#f3efff;border-radius:15px;padding:10px 13px;font-weight:900}
+.round-title{font-size:1.45rem;margin:0}
+.question{font-size:clamp(1.35rem,3vw,2rem);line-height:1.35;margin:22px 0}
+.qnum{color:#7757ff;font-weight:1000}
+.helper{color:#686485;margin-top:-8px}
+.answers{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:20px}
+.answer{background:#f5f2ff;border:3px solid #e6ddff;text-align:left;min-height:64px;color:var(--ink);display:flex;gap:10px;align-items:center}
+.answer .letter{background:#fff;border-radius:10px;padding:7px 10px;color:#7757ff;font-weight:1000}
+.answer.selected{border-color:var(--purple);background:#e9e2ff}
+.answer.correct{border-color:#16b96e;background:#d9ffeb}
+.answer.wrong{border-color:#ff6577;background:#ffe2e7}
+.answer:disabled{cursor:default;transform:none}
+.feedback{padding:14px 16px;border-radius:16px;margin-top:17px;font-weight:800;line-height:1.5}
+.feedback.good{background:#d9ffeb;color:#126a45}.feedback.bad{background:#ffe2e7;color:#9b2e48}
+.controls{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:20px}
+.rounds{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:20px}
+.round-card{border-radius:18px;padding:14px;background:#f5f2ff;text-align:center;font-weight:900}
+.round-card span{font-size:1.7rem;display:block;margin-bottom:5px}
+.round-card.active{background:#fff0b8;outline:3px solid var(--yellow)}
+.round-card.done{background:#d9ffeb}
+.hidden{display:none!important}
+input[type=text]{width:min(100%,360px);padding:14px;border:2px solid #d9d0ff;border-radius:14px;margin:12px 0}
+.open-answer{width:100%!important;max-width:650px!important}
+.result-score{font-size:clamp(3rem,10vw,6rem);font-weight:1000;color:#7757ff;line-height:1;margin:14px}
+.result-badge{font-size:5rem}
+.small{font-size:.9rem;color:#6d668b}
+.sparkle{position:absolute;font-size:2rem;opacity:.65}
+footer{text-align:center;padding:25px 10px;color:#635b8b;font-weight:700}
+@media(max-width:600px){.app{padding:13px}.answers{grid-template-columns:1fr}.rounds{grid-template-columns:repeat(2,1fr)}.hero,.panel{border-radius:23px}.character{width:88px;height:102px}.avatar{font-size:2.5rem}}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="top">
+    <div class="logo">📚 AVENTURA LITERARIA</div>
+    <div class="pill">⭐ ¡Aprende jugando!</div>
+  </div>
+
+  <section id="start" class="hero">
+    <span class="sparkle" style="top:18px;left:8%">✨</span><span class="sparkle" style="right:8%;top:28%">🌈</span>
+    <span class="kicker">MISIÓN ESPECIAL</span>
+    <h1>¡Demuestra<br><span class="gradient">lo que sabes!</span></h1>
+    <p class="subtitle">Entra al mundo de los libros, responde 20 preguntas y ayuda a nuestros personajes a conquistar el Reino de la Literatura.</p>
+    <label for="playerName"><b>¿Cómo te llamas, aventurero/a?</b></label><br>
+    <input id="playerName" type="text" maxlength="24" placeholder="Escribe tu nombre (opcional)">
+    <div class="cast">
+      <div class="character"><div class="avatar">🦊</div><b>Leo el Lector</b></div>
+      <div class="character"><div class="avatar">🧙‍♀️</div><b>Profe Luna</b></div>
+      <div class="character"><div class="avatar">🐉</div><b>Dragón Verso</b></div>
+      <div class="character"><div class="avatar">🤖</div><b>Robot Rima</b></div>
+    </div>
+    <button class="primary" onclick="startGame()">🚀 ¡COMENZAR AVENTURA!</button>
+    <div class="rounds">
+      <div class="round-card"><span>💬</span>Ronda 1<br>Abiertas</div>
+      <div class="round-card"><span>👍</span>Ronda 2<br>Sí o no</div>
+      <div class="round-card"><span>🎯</span>Ronda 3<br>Opciones</div>
+      <div class="round-card"><span>⚡</span>Ronda 4<br>V/F</div>
+    </div>
+  </section>
+
+  <section id="game" class="panel hidden">
+    <div class="hud">
+      <div class="stat" id="playerLabel">🧑 Aventurero</div>
+      <div class="stat">⭐ Puntos: <span id="score">0</span></div>
+      <div class="stat">❤️ Racha: <span id="streak">0</span></div>
+    </div>
+    <div class="progress-wrap"><div class="progress" id="progress"></div></div>
+    <div class="hud"><h2 class="round-title" id="roundTitle">Ronda 1</h2><div class="stat" id="count">Pregunta 1 de 20</div></div>
+    <div class="question"><span class="qnum" id="qnum">01.</span> <span id="questionText"></span></div>
+    <p class="helper" id="helper">Elige tu respuesta.</p>
+    <div id="answerArea"></div>
+    <div id="feedback" class="feedback hidden" aria-live="polite"></div>
+    <div class="controls">
+      <button class="secondary" onclick="quitGame()">🏠 Salir al inicio</button>
+      <button class="primary" id="nextBtn" onclick="nextQuestion()" disabled>Siguiente ➜</button>
+    </div>
+  </section>
+
+  <section id="result" class="hero hidden">
+    <div class="result-badge" id="resultEmoji">🏆</div>
+    <span class="kicker">MISIÓN COMPLETADA</span>
+    <h1 id="resultTitle">¡Gran trabajo!</h1>
+    <p class="subtitle" id="resultText"></p>
+    <div class="result-score"><span id="finalScore">0</span></div>
+    <p><b>puntos conseguidos</b></p>
+    <div class="pill" style="display:inline-block;margin:8px">✅ Correctas: <span id="correctCount">0</span>/20</div>
+    <div class="pill" style="display:inline-block;margin:8px">🎖️ Rango: <span id="rank">Aprendiz</span></div>
+    <div class="cast">
+      <div class="character"><div class="avatar" id="winnerAvatar">🦊</div><b id="winnerName">Leo el Lector</b></div>
+      <div class="character"><div class="avatar">📚</div><b>Libro mágico</b></div>
+      <div class="character"><div class="avatar">🎉</div><b>¡Lo lograste!</b></div>
+    </div>
+    <button class="primary" onclick="restartGame()">🔁 JUGAR OTRA VEZ</button>
+    <button class="secondary" onclick="showReview()">📖 Ver respuestas</button>
+    <div id="review" class="hidden" style="text-align:left;margin-top:22px"></div>
+  </section>
+  <footer>🌟 Lee, imagina, aprende y vuelve a intentarlo. ¡Cada libro es una aventura!</footer>
+</div>
+<script>
+const questions = [
+ {type:"open",round:"Ronda 1 · Preguntas abiertas",title:"💬 Habla con Profe Luna",q:"¿Cuáles son los tres géneros literarios principales?",a:["Narrativo, lírico y dramático"],keywords:["narrativo","lirico","dramatico"],points:10,hint:"Escribe los tres géneros separados por comas."},
+ {type:"open",round:"Ronda 1 · Preguntas abiertas",title:"💬 Habla con Profe Luna",q:"¿Qué figura literaria utiliza la palabra «como» para comparar?",a:["Símil o comparación"],keywords:["simil","comparacion"],points:10,hint:"Escribe el nombre de la figura literaria."},
+ {type:"open",round:"Ronda 1 · Preguntas abiertas",title:"💬 Habla con Profe Luna",q:"¿Quién escribió Cien años de soledad?",a:["Gabriel García Márquez"],keywords:["gabriel garcia marquez","garcia marquez"],points:10,hint:"Escribe el nombre del autor."},
+ {type:"open",round:"Ronda 1 · Preguntas abiertas",title:"💬 Habla con Profe Luna",q:"¿Cómo se llama la figura literaria que exagera una idea?",a:["Hipérbole"],keywords:["hiperbole"],points:10,hint:"Es una figura literaria que exagera."},
+ {type:"open",round:"Ronda 1 · Preguntas abiertas",title:"💬 Habla con Profe Luna",q:"¿Qué obra escribió Jorge Isaacs?",a:["María"],keywords:["maria"],points:10,hint:"Es una novela cuyo título es un nombre."},
+ {type:"yesno",round:"Ronda 2 · Preguntas cerradas",title:"👍 El desafío de Leo",q:"¿La poesía pertenece al género lírico?",a:["Sí"],correct:0,points:5,hint:"Responde únicamente sí o no."},
+ {type:"yesno",round:"Ronda 2 · Preguntas cerradas",title:"👍 El desafío de Leo",q:"¿Una novela pertenece al género dramático?",a:["No"],correct:1,points:5,hint:"Responde únicamente sí o no."},
+ {type:"yesno",round:"Ronda 2 · Preguntas cerradas",title:"👍 El desafío de Leo",q:"¿La personificación consiste en atribuir cualidades humanas a animales u objetos?",a:["Sí"],correct:0,points:5,hint:"Responde únicamente sí o no."},
+ {type:"yesno",round:"Ronda 2 · Preguntas cerradas",title:"👍 El desafío de Leo",q:"¿Rubén Darío escribió la obra Azul?",a:["Sí"],correct:0,points:5,hint:"Responde únicamente sí o no."},
+ {type:"yesno",round:"Ronda 2 · Preguntas cerradas",title:"👍 El desafío de Leo",q:"¿La información implícita aparece expresada directamente en el texto?",a:["No"],correct:1,points:5,hint:"Responde únicamente sí o no."},
+ {type:"mc",round:"Ronda 3 · Selección múltiple",title:"🎯 El portal de opciones",q:"¿Cuál de los siguientes pertenece al género narrativo?",opts:["Poema","Novela","Tragedia","Canción"],correct:1,points:10,hint:"Elige A, B, C o D."},
+ {type:"mc",round:"Ronda 3 · Selección múltiple",title:"🎯 El portal de opciones",q:"¿Qué figura literaria se utiliza en «Tus ojos son dos estrellas»?",opts:["Hipérbole","Ironía","Metáfora","Anáfora"],correct:2,points:10,hint:"Elige A, B, C o D."},
+ {type:"mc",round:"Ronda 3 · Selección múltiple",title:"🎯 El portal de opciones",q:"¿Quién escribió María?",opts:["Pablo Neruda","Jorge Isaacs","Gabriel García Márquez","Rubén Darío"],correct:1,points:10,hint:"Elige A, B, C o D."},
+ {type:"mc",round:"Ronda 3 · Selección múltiple",title:"🎯 El portal de opciones",q:"¿Cuál es el propósito principal de identificar la idea principal de un texto?",opts:["Conocer el mensaje central","Contar los párrafos","Buscar palabras difíciles","Identificar todos los personajes"],correct:0,points:10,hint:"Elige A, B, C o D."},
+ {type:"mc",round:"Ronda 3 · Selección múltiple",title:"🎯 El portal de opciones",q:"¿Qué movimiento literario aparece entre los temas del material?",opts:["Cubismo","Impresionismo","Romanticismo","Surrealismo cinematográfico"],correct:2,points:10,hint:"Elige A, B, C o D."},
+ {type:"vf",round:"Ronda 4 · Verdadero o falso",title:"⚡ La guarida del Dragón Verso",q:"El cuento y la leyenda pertenecen al género narrativo.",a:["Verdadero","Falso"],correct:0,points:5,hint:"Elige verdadero o falso."},
+ {type:"vf",round:"Ronda 4 · Verdadero o falso",title:"⚡ La guarida del Dragón Verso",q:"La metáfora y el símil son exactamente iguales en su forma de comparación.",a:["Verdadero","Falso"],correct:1,points:5,hint:"Elige verdadero o falso."},
+ {type:"vf",round:"Ronda 4 · Verdadero o falso",title:"⚡ La guarida del Dragón Verso",q:"El Barroco y el Renacimiento son movimientos literarios.",a:["Verdadero","Falso"],correct:0,points:5,hint:"Elige verdadero o falso."},
+ {type:"vf",round:"Ronda 4 · Verdadero o falso",title:"⚡ La guarida del Dragón Verso",q:"La intención del autor es uno de los aspectos que se deben reconocer al interpretar un texto.",a:["Verdadero","Falso"],correct:0,points:5,hint:"Elige verdadero o falso."},
+ {type:"vf",round:"Ronda 4 · Verdadero o falso",title:"⚡ La guarida del Dragón Verso",q:"Pablo Neruda escribió Veinte poemas de amor y una canción desesperada.",a:["Verdadero","Falso"],correct:0,points:5,hint:"Elige verdadero o falso."}
+];
+let index=0,score=0,streak=0,correctTotal=0,results=[],player="Aventurero",answered=false;
+const $=id=>document.getElementById(id);
+function norm(s){return s.toLocaleLowerCase("es").normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[¿?¡!.,;:«»"'()]/g,"").trim()}
+function startGame(){player=$("playerName").value.trim()||"Aventurero";index=0;score=0;streak=0;correctTotal=0;results=[];$("start").classList.add("hidden");$("result").classList.add("hidden");$("game").classList.remove("hidden");$("playerLabel").textContent="🧑 "+player;renderQuestion()}
+function renderQuestion(){
+ answered=false;const q=questions[index];$("roundTitle").textContent=q.title;$("count").textContent=`Pregunta ${index+1} de ${questions.length}`;$("qnum").textContent=String(index+1).padStart(2,"0")+".";$("questionText").textContent=q.q;$("helper").textContent=q.hint;$("score").textContent=score;$("streak").textContent=streak;$("progress").style.width=(index/questions.length*100)+"%";$("feedback").className="feedback hidden";$("feedback").textContent="";$("nextBtn").disabled=true;$("nextBtn").textContent=index===questions.length-1?"Ver resultado 🏆":"Siguiente ➜";
+ const area=$("answerArea");area.innerHTML="";
+ if(q.type==="open"){const inp=document.createElement("input");inp.type="text";inp.id="openInput";inp.className="open-answer";inp.placeholder="Escribe tu respuesta aquí…";inp.maxLength=160;inp.addEventListener("keydown",e=>{if(e.key==="Enter")checkOpen()});area.appendChild(inp);const b=document.createElement("button");b.className="primary";b.textContent="✨ Comprobar respuesta";b.onclick=checkOpen;area.appendChild(b);setTimeout(()=>inp.focus(),50)}
+ else{const opts=q.type==="mc"?q.opts:q.a;const letters=q.type==="mc"?["A","B","C","D"]:null;const wrap=document.createElement("div");wrap.className="answers";opts.forEach((opt,i)=>{const b=document.createElement("button");b.className="answer";b.innerHTML=(letters?`<span class="letter">${letters[i]}</span>`:`<span class="letter">${q.type==="yesno"?(i===0?"👍":"👎"):(i===0?"✅":"❌")}</span>`)+`<span>${opt}</span>`;b.onclick=()=>checkChoice(i,b);wrap.appendChild(b)});area.appendChild(wrap)}
+}
+function showFeedback(ok,msg){const f=$("feedback");f.className="feedback "+(ok?"good":"bad");f.textContent=msg;$("nextBtn").disabled=false;$("progress").style.width=((index+1)/questions.length*100)+"%"}
+function record(ok,answer,correctAnswer,open=false){const q=questions[index];answered=true;if(ok){score+=q.points;streak++;correctTotal++;}else streak=0;$("score").textContent=score;$("streak").textContent=streak;results[index]={q:q.q,ok,answer,correct:correctAnswer,points:ok?q.points:0};if(streak>=3){showFeedback(ok,ok?`🌟 ¡Increíble, ${player}! Racha de ${streak}. +${q.points} puntos.`:msgFallback(correctAnswer));}else showFeedback(ok,ok?`🎉 ¡Correcto! +${q.points} puntos. ¡Sigue así!`:msgFallback(correctAnswer));if(!open){document.querySelectorAll(".answer").forEach(b=>b.disabled=true)}else{$("openInput").disabled=true;document.querySelector("#answerArea button").disabled=true}}
+function msgFallback(correct){return `💡 ¡Buen intento! La respuesta esperada es: ${correct}. ¡Aprender también es parte de la aventura!`}
+function checkOpen(){if(answered)return;const q=questions[index],input=$("openInput"),val=input.value.trim();if(!val){$("feedback").className="feedback bad";$("feedback").textContent="✏️ Escribe una respuesta antes de comprobarla.";return}const n=norm(val);let ok=false;if(index===0){ok=["narrativo","lirico","dramatico"].every(k=>n.includes(k))}else{ok=q.keywords.some(k=>n.includes(k))}record(ok,val,q.a[0],true)}
+function checkChoice(i,btn){if(answered)return;const q=questions[index];let ok=i===q.correct;let right=q.type==="mc"?`${["A","B","C","D"][q.correct]}. ${q.opts[q.correct]}`:q.a[q.correct];record(ok,q.type==="mc"?`${["A","B","C","D"][i]}. ${q.opts[i]}`:q.a[i],right);btn.classList.add(ok?"correct":"wrong");if(!ok){const all=[...document.querySelectorAll(".answer")];all[q.correct].classList.add("correct")}}
+function nextQuestion(){if(!answered)return;if(index<questions.length-1){index++;renderQuestion()}else showResults()}
+function showResults(){$("game").classList.add("hidden");$("result").classList.remove("hidden");$("progress").style.width="100%";$("finalScore").textContent=score;$("correctCount").textContent=correctTotal;let rank,emoji,avatar,title,text;
+if(correctTotal>=18){rank="Genio/a literario/a";emoji="👑";avatar="🧙‍♀️";title=`¡Lo lograste, ${player}!`;text="Has conquistado el Reino de la Literatura. ¡Tu conocimiento brilla como una estrella!";}
+else if(correctTotal>=14){rank="Estrella de los libros";emoji="🏆";avatar="🦊";title="¡Gran aventura!";text="Estás muy cerca de dominar el mundo literario. ¡Sigue leyendo y aprendiendo!";}
+else if(correctTotal>=10){rank="Explorador/a literario/a";emoji="🌟";avatar="🤖";title="¡Vas por buen camino!";text="Has reunido conocimientos importantes. Cada pregunta te ayuda a crecer.";}
+else{rank="Aprendiz valiente";emoji="📚";avatar="🐉";title="¡La aventura apenas empieza!";text="Lo importante es intentarlo. Repasa las respuestas y vuelve a jugar para mejorar tu puntuación."}
+$("resultEmoji").textContent=emoji;$("resultTitle").textContent=title;$("resultText").textContent=text;$("rank").textContent=rank;$("winnerAvatar").textContent=avatar;$("winnerName").textContent=rank;$("review").classList.add("hidden");$("review").innerHTML=""}
+function showReview(){const box=$("review");box.classList.toggle("hidden");if(!box.classList.contains("hidden")){box.innerHTML="<h2>📖 Repaso de la aventura</h2>"+results.map((r,i)=>`<div style="padding:12px;margin:10px 0;border-radius:14px;background:${r.ok?"#d9ffeb":"#ffe2e7"}"><b>${i+1}. ${r.q}</b><br><span>Tu respuesta: ${escapeHtml(r.answer||"—")}</span><br><b>Respuesta esperada: ${escapeHtml(r.correct)}</b> ${r.ok?"✅":"💡"}</div>`).join("")}}
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function restartGame(){$("result").classList.add("hidden");$("start").classList.remove("hidden");$("game").classList.add("hidden")}
+function quitGame(){if(confirm("¿Quieres salir de la aventura? El progreso de esta partida se reiniciará.")){restartGame()}}
+</script>
+</body>
+</html>
